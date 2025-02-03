@@ -46,16 +46,17 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 #define DWT_CTRL (*(volatile uint32_t*)0xE0001000)
 
-TaskHandle_t menu_task_handle;
-TaskHandle_t led_task_handle;
-TaskHandle_t rtc_task_handle;
-TaskHandle_t print_task_handle;
-TaskHandle_t command_handling_task_handle;
+xTaskHandle menu_task_handle;
+xTaskHandle led_task_handle;
+xTaskHandle rtc_task_handle;
+xTaskHandle print_task_handle;
+xTaskHandle command_handling_task_handle;
 
 QueueHandle_t input_data_queue_handle;
 QueueHandle_t print_queue_handle;
 
 volatile uint8_t user_data;
+state_t curr_state = sMainMenu;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -125,7 +126,7 @@ int main(void)
 	configASSERT(print_queue_handle != NULL);
 
 	// UART Handle
-	HAL_UART_Receive_IT(&huart2, &user_data, 1);
+	HAL_UART_Receive_IT(&huart2, (uint8_t*)&user_data, 1);
 
   vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -401,8 +402,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if(xQueueIsQueueFullFromISR(input_data_queue_handle) == pdFALSE) // check if the queue is full
 	{
 		// if Queue is not full -> enqueue the data
-		BaseType_t status;
-		status = xQueueSendFromISR(input_data_queue_handle, (void*)&user_data, NULL);
+		xQueueSendFromISR(input_data_queue_handle, (void*)&user_data, NULL);
 	}
 	else
 	{
@@ -411,16 +411,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		{
 			uint8_t dummy;
 			// if the data is \n -> make sure the last byte of the queue is '\n'
-			portBASE_TYPE status;
-			status = xQueueReceiveFromISR(input_data_queue_handle, (void*)&dummy, NULL);
-			status = xQueueSendFromISR(input_data_queue_handle, (void*)&user_data, NULL);
-			isEnterReceived = 1;
+			xQueueReceiveFromISR(input_data_queue_handle, (void*)&dummy, NULL);
+			xQueueSendFromISR(input_data_queue_handle, (void*)&user_data, NULL);
 		}
 	}
 	// Send notification to command handling task if user data is \n
 	if(user_data == '\n')
 	{
-		xTaskNotifyFromISR(command_handling_task_handle, 0, eNotifyAction, NULL);
+		xTaskNotifyFromISR(command_handling_task_handle, 0, eNoAction, NULL);
 	}
 
 	// Enable UART data byte reception again in IT mode

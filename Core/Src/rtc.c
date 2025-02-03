@@ -2,7 +2,7 @@
  * rtc.c
  *
  *  Created on: Jan 31, 2025
- *      Author: PC
+ *      Author: Huy
  */
 
-
+#include "main.h"

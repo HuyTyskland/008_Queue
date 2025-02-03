@@ -38,7 +38,32 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef struct
+{
+	uint8_t payload[10];
+	uint32_t len;
+} command_t;
 
+typedef enum
+{
+	sMainMenu = 0,
+	sLedEffect,
+	sRtcMenu,
+	sRtcTimeConfig,
+	sRtcDateConfig,
+	sRtcReport,
+}state_t;
+
+extern xTaskHandle menu_task_handle;
+extern xTaskHandle led_task_handle;
+extern xTaskHandle rtc_task_handle;
+extern xTaskHandle print_task_handle;
+extern xTaskHandle command_handling_task_handle;
+
+extern QueueHandle_t input_data_queue_handle;
+extern QueueHandle_t print_queue_handle;
+
+extern state_t curr_state;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
