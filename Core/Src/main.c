@@ -22,8 +22,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include<stdio.h>
-#include "FreeRTOS.h"
-#include "task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,18 +39,31 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+RTC_HandleTypeDef hrtc;
+
+UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 #define DWT_CTRL (*(volatile uint32_t*)0xE0001000)
+
+TaskHandle_t menu_task_handle;
+TaskHandle_t led_task_handle;
+TaskHandle_t rtc_task_handle;
+TaskHandle_t print_task_handle;
+TaskHandle_t command_handling_task_handle;
+
+QueueHandle_t input_data_queue_handle;
+QueueHandle_t print_queue_handle;
+
+volatile uint8_t user_data;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_RTC_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
-static void task1_handler(void* parameters);
-static void task2_handler(void* parameters);
-
 extern void SEGGER_UART_init(uint32_t);
 /* USER CODE END PFP */
 
@@ -68,8 +79,6 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	BaseType_t status;
-	TaskHandle_t task1_handle;
-	TaskHandle_t task2_handle;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -90,17 +99,33 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_RTC_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   DWT_CTRL |= (1 << 0);
-  SEGGER_UART_init(250000);
 
-  SEGGER_SYSVIEW_Conf();
-
-  status = xTaskCreate(task1_handler, "RED", 200, "Hello world from task 1", 2, &task1_handle);
+  status = xTaskCreate(menu_task, "MENU", 250, NULL, 2, &menu_task_handle);
 	configASSERT(status == pdPASS);
 
-	status = xTaskCreate(task2_handler, "GREEN", 200, "Hello world from task 2", 3, &task2_handle);
+	status = xTaskCreate(led_task, "LED", 250, NULL, 2, &led_task_handle);
 	configASSERT(status == pdPASS);
+
+	status = xTaskCreate(rtc_task, "RTC", 250, NULL, 2, &rtc_task_handle);
+	configASSERT(status == pdPASS);
+
+	status = xTaskCreate(print_task, "PRINT", 250, NULL, 2, &print_task_handle);
+	configASSERT(status == pdPASS);
+
+	status = xTaskCreate(command_handling_task, "COMMAND", 250, NULL, 2, &command_handling_task_handle);
+	configASSERT(status == pdPASS);
+
+	input_data_queue_handle = xQueueCreate(10, sizeof(char));
+	configASSERT(input_data_queue_handle != NULL);
+	print_queue_handle = xQueueCreate(10, sizeof(size_t));
+	configASSERT(print_queue_handle != NULL);
+
+	// UART Handle
+	HAL_UART_Receive_IT(&huart2, &user_data, 1);
 
   vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -133,9 +158,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = 8;
@@ -160,6 +186,74 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+
+  /** Initialize RTC Only
+  */
+  hrtc.Instance = RTC;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_12;
+  hrtc.Init.AsynchPrediv = 127;
+  hrtc.Init.SynchPrediv = 255;
+  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RTC_Init 2 */
+
+  /* USER CODE END RTC_Init 2 */
+
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
 }
 
 /**
@@ -301,27 +395,38 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-static void task1_handler(void* parameters)
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	char msg[100];
-	while(1)
+	if(xQueueIsQueueFullFromISR(input_data_queue_handle) == pdFALSE) // check if the queue is full
 	{
-		snprintf(msg, 100, "Hello TASK 1: %s\n", (char*)parameters);
-		SEGGER_SYSVIEW_PrintfTarget(msg);
-		HAL_Delay(200);
+		// if Queue is not full -> enqueue the data
+		BaseType_t status;
+		status = xQueueSendFromISR(input_data_queue_handle, (void*)&user_data, NULL);
 	}
+	else
+	{
+		// Queue is full
+		if(user_data == '\n') // Check if the inserted data is ENTER (\n)
+		{
+			uint8_t dummy;
+			// if the data is \n -> make sure the last byte of the queue is '\n'
+			portBASE_TYPE status;
+			status = xQueueReceiveFromISR(input_data_queue_handle, (void*)&dummy, NULL);
+			status = xQueueSendFromISR(input_data_queue_handle, (void*)&user_data, NULL);
+			isEnterReceived = 1;
+		}
+	}
+	// Send notification to command handling task if user data is \n
+	if(user_data == '\n')
+	{
+		xTaskNotifyFromISR(command_handling_task_handle, 0, eNotifyAction, NULL);
+	}
+
+	// Enable UART data byte reception again in IT mode
+	HAL_UART_Receive_IT(&huart2, (uint8_t*)&user_data, 1);
 }
 
-static void task2_handler(void* parameters)
-{
-	char msg[100];
-	while(1)
-	{
-		snprintf(msg, 100, "Hello TASK 2: %s\n", (char*)parameters);
-		SEGGER_SYSVIEW_PrintfTarget(msg);
-		HAL_Delay(200);
-	}
-}
 /* USER CODE END 4 */
 
 /**

@@ -24,8 +24,22 @@ Core/Src/stm32f4xx_it.o: ../Core/Src/stm32f4xx_it.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/FreeRTOS.h \
+ ../Core/Inc/FreeRTOSConfig.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/projdefs.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/portable.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/deprecated_definitions.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/mpu_wrappers.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/task.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/list.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/queue.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/task.h \
  ../Core/Inc/stm32f4xx_it.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -53,6 +67,20 @@ Core/Src/stm32f4xx_it.o: ../Core/Src/stm32f4xx_it.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/FreeRTOS.h:
+../Core/Inc/FreeRTOSConfig.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/projdefs.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/portable.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/deprecated_definitions.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/mpu_wrappers.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/task.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/list.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/queue.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/task.h:
 ../Core/Inc/stm32f4xx_it.h:
