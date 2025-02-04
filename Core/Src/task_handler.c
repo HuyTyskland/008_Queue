@@ -19,11 +19,11 @@ void menu_task(void* parameters)
 	uint8_t option;
 	const char* msg_menu = "===================\n"
 													"|       Menu        |\n"
-														"====================\n"
-														"LED effect         ---> 0 \n"
-														"Date and time      ---> 1 \n"
-														"Exit               ---> 2 \n"
-														"Enter your choice here:   \n";
+													"====================\n"
+													"LED effect         ---> 0 \n"
+													"Date and time      ---> 1 \n"
+													"Exit               ---> 2 \n"
+													"Enter your choice here:   \n";
 	while(1)
 	{
 		xQueueSend(print_queue_handle, &msg_menu, portMAX_DELAY);
@@ -55,6 +55,7 @@ void menu_task(void* parameters)
 		{
 			// invalid entry
 			xQueueSend(print_queue_handle, &msg_inv, portMAX_DELAY);
+			continue;
 		}
 		// wait to run again when some other task notifies
 		xTaskNotifyWait(0,0,NULL,portMAX_DELAY);
@@ -115,9 +116,11 @@ void rtc_task(void* parameters)
 
 void print_task(void* parameters)
 {
+	uint32_t *msg;
 	while(1)
 	{
-
+		xQueueReceive(print_queue_handle, &msg, portMAX_DELAY);
+		HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen((char*)msg), HAL_MAX_DELAY);
 	}
 }
 

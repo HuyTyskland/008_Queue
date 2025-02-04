@@ -39,7 +39,8 @@ Core/Src/led_effect.o: ../Core/Src/led_effect.c ../Core/Inc/main.h \
  D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/task.h \
  D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/list.h \
  D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/queue.h \
- D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/task.h
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/task.h \
+ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/timers.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -82,3 +83,4 @@ D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/incl
 D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/list.h:
 D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/queue.h:
 D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/task.h:
+D:/Self-development/RTOS/RTOS_workspace/workable_common/ThirdParty/FreeRTOS/include/timers.h:

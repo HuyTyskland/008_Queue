@@ -57,6 +57,8 @@ QueueHandle_t print_queue_handle;
 
 volatile uint8_t user_data;
 state_t curr_state = sMainMenu;
+
+TimerHandle_t handle_led_timer[4];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,7 +67,7 @@ static void MX_GPIO_Init(void);
 static void MX_RTC_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
-extern void SEGGER_UART_init(uint32_t);
+void led_effect_callback(TimerHandle_t xTimer);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -124,6 +126,12 @@ int main(void)
 	configASSERT(input_data_queue_handle != NULL);
 	print_queue_handle = xQueueCreate(10, sizeof(size_t));
 	configASSERT(print_queue_handle != NULL);
+
+	// Create software timer for led effect
+	for(int i = 0; i < 4; i++)
+	{
+		handle_led_timer[i] = xTimerCreate("led_timer", pdMS_TO_TICKS(500), pdTRUE, (void*)(i+1), led_effect_callback);
+	}
 
 	// UART Handle
 	HAL_UART_Receive_IT(&huart2, (uint8_t*)&user_data, 1);
@@ -396,6 +404,26 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void led_effect_callback(TimerHandle_t xTimer)
+{
+	int id;
+	id = (uint32_t) pvTimerGetTimerID(xTimer);
+
+	switch(id)
+	{
+		case 1:
+			LED_effect1();
+			break;
+		case 2:
+			LED_effect2();
+			break;
+		case 3:
+			LED_effect3();
+			break;
+		case 4:
+			LED_effect4();
+	}
+}
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
