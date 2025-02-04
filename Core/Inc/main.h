@@ -31,6 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <string.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -85,6 +86,8 @@ void led_task(void* parameters);
 void rtc_task(void* parameters);
 void print_task(void* parameters);
 void command_handling_task(void* parameters);
+void led_effect(int n);
+void led_effect_stop(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -155,7 +158,10 @@ void command_handling_task(void* parameters);
 #define MEMS_INT2_Pin GPIO_PIN_1
 #define MEMS_INT2_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
-
+#define LED1 LD4_Pin
+#define LED2 LD3_Pin
+#define LED3 LD5_Pin
+#define LED4 LD6_Pin
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
