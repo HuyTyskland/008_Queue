@@ -315,9 +315,9 @@ void rtc_task(void* parameters)
 					break;
 				}
 			}
-			// Notify menu task
-			xTaskNotify(menu_task_handle, 0, eNoAction);
 		}
+		// Notify menu task
+		xTaskNotify(menu_task_handle, 0, eNoAction);
 	}
 }
 
